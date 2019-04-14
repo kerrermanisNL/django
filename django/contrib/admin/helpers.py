@@ -400,3 +400,32 @@ class AdminErrorList(forms.utils.ErrorList):
                 self.extend(inline_formset.non_form_errors())
                 for errors_in_inline_form in inline_formset.errors:
                     self.extend(errors_in_inline_form.values())
+
+
+class SubmitLineObject(object):
+    def get_html(self):
+        raise NotImplementedError
+
+
+class SubmitLineButton(SubmitLineObject):
+    value = ''
+    name = ''
+    onclick = ''
+    is_highlighted = False
+
+    def get_html(self):
+        onclick = 'onclick="{}" '.format(self.onclick) if self.onclick else ''
+        is_highlighted = 'class="default" ' if self.is_highlighted else ''
+        type = 'type="button" ' if self.onclick else 'type="submit" '
+        return '<input value="{}" name="{}" {}{}{}/>'.format(self.value, self.name, onclick, type, is_highlighted)
+
+
+class SubmitLineLink(SubmitLineObject):
+    p_class = ''
+    a_href = ''
+    a_class = ''
+    a_value = ''
+
+    def get_html(self):
+        return '<p class="{}"><a href="{}" class="{}">{}</a></p>'.format(self.p_class, self.a_href, self.a_class,
+                                                                         self.a_value)
